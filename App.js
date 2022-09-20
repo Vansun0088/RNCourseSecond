@@ -29,9 +29,9 @@ export default function App() {
 */
   let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
-  if (userNumber) {
+  if (userNumber && guessedNumber === undefined) {
     screen = <GameScreen onGuessedNumber={guessedNumberHandler} chosenNumber={userNumber} />;
-  } else if (guessedNumber) {
+  } else if (userNumber && guessedNumber) {
     screen = <GameOverScreen />;
   }
 
