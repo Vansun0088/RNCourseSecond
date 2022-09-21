@@ -11,9 +11,7 @@ import GameOverScreen from "./screens/GameOverScreen";
 export default function App() {
   const [userNumber, setUserNumber] = useState();
   const [guessedNumber, setGuessedNumber] = useState();
-  /*
-  const [gameIsOver, setGameIsOver] = useState(true);
-*/
+
   function pickedNumberHandler(pickedNumber) {
     setUserNumber(pickedNumber);
   }
@@ -22,11 +20,6 @@ export default function App() {
     setGuessedNumber(guessedNumber);
   }
 
-  /*
-  function gameOverHandler() {
-    setGameIsOver(true);
-  }
-*/
   let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
   if (userNumber && guessedNumber === undefined) {
@@ -35,13 +28,9 @@ export default function App() {
     screen = <GameOverScreen />;
   }
 
-  /*if (gameIsOver) {
-    screen = <GameOverScreen />;
-  }*/
-
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <LinearGradient colors={["#430329", Colors.yellow]} style={styles.rootScreen}>
         <ImageBackground
           source={require("./assets/images/backgroundDIces.png")}
