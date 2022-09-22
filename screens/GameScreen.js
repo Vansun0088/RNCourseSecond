@@ -1,11 +1,13 @@
-import { Alert, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View, FlatList, Text } from "react-native";
 import { useState, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
 
 import InsText from "../components/ui/InsText";
 import Title from "../components/ui/Title";
 import NumberContainer from "../components/game/NumberContainer";
 import PrimaryButton from "../components/ui/PrimaryButtons";
 import Card from "../components/ui/Card";
+import Colors from "../constants/Colors";
 
 function generateRandomBetween(min, max, exclude) {
   const rndNum = Math.floor(Math.random() * (max - min)) + min;
@@ -21,13 +23,15 @@ let minBoundary = 1;
 let maxBoundary = 100;
 
 function GameScreen({ chosenNumber, onGuessedNumber }) {
-  const [currentGuess, setCurrentGuess] = useState(
-    generateRandomBetween(minBoundary, maxBoundary, chosenNumber)
-  );
+  const initialGuess = generateRandomBetween(1, 100, chosenNumber);
+  const [currentGuess, setCurrentGuess] = useState(initialGuess);
+  const [guessRounds, setGuessRounds] = useState([initialGuess]);
 
   useEffect(() => {
     if (currentGuess === chosenNumber) {
       onGuessedNumber(currentGuess);
+      minBoundary = 1;
+      maxBoundary = 100;
     }
   }, [currentGuess]);
 
@@ -46,10 +50,9 @@ function GameScreen({ chosenNumber, onGuessedNumber }) {
     } else {
       minBoundary = currentGuess + 1;
     }
-    console.log(minBoundary, maxBoundary);
     const newRndNumber = generateRandomBetween(minBoundary, maxBoundary, currentGuess);
     setCurrentGuess(newRndNumber);
-    debugger;
+    setGuessRounds((prevGuessRounds) => [newRndNumber, ...prevGuessRounds]);
   }
 
   return (
@@ -57,13 +60,29 @@ function GameScreen({ chosenNumber, onGuessedNumber }) {
       <Title>Opponent's Guess</Title>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card>
-        <InsText>Higher or lower</InsText>
-        <View style={styles.buttonContainer}>
-          <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>+</PrimaryButton>
-          <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>-</PrimaryButton>
+        <InsText style={styles.insText}>Higher or lower</InsText>
+        <View style={styles.buttonsContainer}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>
+              <Ionicons name="md-add" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>
+              <Ionicons name="md-remove" size={24} color="white" />
+            </PrimaryButton>
+          </View>
         </View>
       </Card>
-      <View></View>
+      <Card>
+        <FlatList
+          data={guessRounds}
+          renderItem={({ item }) => {
+            return <Text style={styles.log}>{item}</Text>;
+          }}
+          keyExtractor={(item) => item}
+        />
+      </Card>
     </View>
   );
 }
@@ -75,10 +94,17 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 28,
   },
-  buttonContainer: {
-    flexDirection: "column",
+  buttonsContainer: {
+    flexDirection: "row",
   },
-  button: {
-    width: "50%",
+  buttonContainer: {
+    flex: 1,
+  },
+  insText: {
+    marginBottom: 12,
+  },
+  log: {
+    fontSize: 24,
+    color: Colors.yellow,
   },
 });

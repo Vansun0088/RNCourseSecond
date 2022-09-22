@@ -6,9 +6,7 @@ function PrimaryButton({ children, onPress }) {
   return (
     <View style={styles.container}>
       <Pressable
-        style={({ pressed }) =>
-          pressed ? [styles.pres, styles.pressed] : styles.pres
-        }
+        style={({ pressed }) => (pressed ? [styles.pres, styles.pressed] : styles.pres)}
         onPress={onPress}
       >
         <Text style={styles.buttonText}>{children}</Text>
@@ -43,5 +41,6 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.65,
+    backgroundColor: Colors.primary500,
   },
 });

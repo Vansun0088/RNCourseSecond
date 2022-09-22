@@ -2,6 +2,8 @@ import { StyleSheet, ImageBackground, SafeAreaView } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
+import { useFonts } from "expo-font";
+import AppLoading from "expo-app-loading";
 
 import StartGameScreen from "./screens/StartGameScreen";
 import GameScreen from "./screens/GameScreen";
@@ -11,6 +13,16 @@ import GameOverScreen from "./screens/GameOverScreen";
 export default function App() {
   const [userNumber, setUserNumber] = useState();
   const [guessedNumber, setGuessedNumber] = useState();
+  const [guessRounds, setGuessRounds] = useState(0);
+
+  const [fontsLoaded] = useFonts({
+    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
 
   function pickedNumberHandler(pickedNumber) {
     setUserNumber(pickedNumber);
@@ -20,17 +32,35 @@ export default function App() {
     setGuessedNumber(guessedNumber);
   }
 
+  function newGameHandler() {
+    setUserNumber(null);
+    setGuessedNumber(undefined);
+    setGuessRounds(0);
+  }
+
   let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
-  if (userNumber && guessedNumber === undefined) {
-    screen = <GameScreen onGuessedNumber={guessedNumberHandler} chosenNumber={userNumber} />;
+  if (userNumber != undefined && guessedNumber === undefined) {
+    screen = (
+      <GameScreen
+        roundsNumberSet={setGuessRounds}
+        onGuessedNumber={guessedNumberHandler}
+        chosenNumber={userNumber}
+      />
+    );
   } else if (userNumber && guessedNumber) {
-    screen = <GameOverScreen />;
+    screen = (
+      <GameOverScreen
+        userNumber={userNumber}
+        roundsNumber={guessRounds}
+        onRestart={newGameHandler}
+      />
+    );
   }
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <LinearGradient colors={["#430329", Colors.yellow]} style={styles.rootScreen}>
         <ImageBackground
           source={require("./assets/images/backgroundDIces.png")}
