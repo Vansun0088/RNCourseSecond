@@ -32,6 +32,10 @@ export default function App() {
     setGuessedNumber(guessedNumber);
   }
 
+  function setRoundsNumberHandler(roundsNumber) {
+    setGuessRounds(roundsNumber);
+  }
+
   function newGameHandler() {
     setUserNumber(null);
     setGuessedNumber(undefined);
@@ -43,7 +47,7 @@ export default function App() {
   if (userNumber != undefined && guessedNumber === undefined) {
     screen = (
       <GameScreen
-        roundsNumberSet={setGuessRounds}
+        roundsNumberSet={setRoundsNumberHandler}
         onGuessedNumber={guessedNumberHandler}
         chosenNumber={userNumber}
       />

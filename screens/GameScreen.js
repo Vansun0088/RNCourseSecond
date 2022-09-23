@@ -22,7 +22,7 @@ function generateRandomBetween(min, max, exclude) {
 let minBoundary = 1;
 let maxBoundary = 100;
 
-function GameScreen({ chosenNumber, onGuessedNumber }) {
+function GameScreen({ chosenNumber, onGuessedNumber, roundsNumberSet }) {
   const initialGuess = generateRandomBetween(1, 100, chosenNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
   const [guessRounds, setGuessRounds] = useState([initialGuess]);
@@ -32,6 +32,7 @@ function GameScreen({ chosenNumber, onGuessedNumber }) {
       onGuessedNumber(currentGuess);
       minBoundary = 1;
       maxBoundary = 100;
+      roundsNumberSet(guessRounds.length);
     }
   }, [currentGuess]);
 
@@ -74,15 +75,19 @@ function GameScreen({ chosenNumber, onGuessedNumber }) {
           </View>
         </View>
       </Card>
-      <Card>
-        <FlatList
-          data={guessRounds}
-          renderItem={({ item }) => {
-            return <Text style={styles.log}>{item}</Text>;
-          }}
-          keyExtractor={(item) => item}
-        />
-      </Card>
+      <FlatList
+        style={styles.list}
+        data={guessRounds}
+        renderItem={({ item, index }) => {
+          return (
+            <View style={styles.log}>
+              <Text style={styles.textLog}>#{guessRounds.length - index}</Text>
+              <Text style={[styles.textLog, { marginRight: "10%" }]}>Opponent's Guess: {item}</Text>
+            </View>
+          );
+        }}
+        keyExtractor={(item) => item}
+      />
     </View>
   );
 }
@@ -104,7 +109,29 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   log: {
-    fontSize: 24,
-    color: Colors.yellow,
+    borderColor: "#240217",
+    borderWidth: 1,
+    borderRadius: 40,
+    padding: 12,
+    marginVertical: 8,
+    backgroundColor: Colors.yellow,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    elevation: 4,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+  },
+  textLog: {
+    fontFamily: "open-sans",
+    fontSize: 16,
+    color: Colors.primary500,
+  },
+  list: {
+    padding: 10,
+    marginVertical: 10,
+    borderTopWidth: 2,
   },
 });
