@@ -1,4 +1,12 @@
-import { Alert, StyleSheet, View, FlatList, Text } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  View,
+  FlatList,
+  Text,
+  useWindowDimensions,
+  Dimensions,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -8,6 +16,7 @@ import NumberContainer from "../components/game/NumberContainer";
 import PrimaryButton from "../components/ui/PrimaryButtons";
 import Card from "../components/ui/Card";
 import Colors from "../constants/Colors";
+import Sizes from "../constants/Sizes";
 
 function generateRandomBetween(min, max, exclude) {
   const rndNum = Math.floor(Math.random() * (max - min)) + min;
@@ -26,6 +35,8 @@ function GameScreen({ chosenNumber, onGuessedNumber, roundsNumberSet }) {
   const initialGuess = generateRandomBetween(1, 100, chosenNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
   const [guessRounds, setGuessRounds] = useState([initialGuess]);
+
+  const { width, height } = useWindowDimensions();
 
   useEffect(() => {
     if (currentGuess === chosenNumber) {
@@ -54,13 +65,13 @@ function GameScreen({ chosenNumber, onGuessedNumber, roundsNumberSet }) {
     const newRndNumber = generateRandomBetween(minBoundary, maxBoundary, currentGuess);
     setCurrentGuess(newRndNumber);
     setGuessRounds((prevGuessRounds) => [newRndNumber, ...prevGuessRounds]);
+    console.log(width + "|" + height);
   }
 
-  return (
-    <View style={styles.generalView}>
-      <Title>Opponent's Guess</Title>
+  let content = (
+    <>
       <NumberContainer>{currentGuess}</NumberContainer>
-      <Card>
+      <Card style={{ marginTop: Sizes.deviceWidth < 374 ? 18 : 36 }}>
         <InsText style={styles.insText}>Higher or lower</InsText>
         <View style={styles.buttonsContainer}>
           <View style={styles.buttonContainer}>
@@ -75,14 +86,41 @@ function GameScreen({ chosenNumber, onGuessedNumber, roundsNumberSet }) {
           </View>
         </View>
       </Card>
+    </>
+  );
+
+  if (width > 500) {
+    content = (
+      <>
+        <View style={styles.buttonsContainerWide}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>
+              <Ionicons name="md-remove" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+          <NumberContainer>{currentGuess}</NumberContainer>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>
+              <Ionicons name="md-add" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+        </View>
+      </>
+    );
+  }
+
+  return (
+    <View style={styles.generalView}>
+      <Title>Opponent's Guess</Title>
+      {content}
       <FlatList
-        style={styles.list}
+        contentContainerStyle={styles.list}
         data={guessRounds}
         renderItem={({ item, index }) => {
           return (
             <View style={styles.log}>
               <Text style={styles.textLog}>#{guessRounds.length - index}</Text>
-              <Text style={[styles.textLog, { marginRight: "10%" }]}>Opponent's Guess: {item}</Text>
+              <Text style={styles.textLog}>Opponent's Guess: {item}</Text>
             </View>
           );
         }}
@@ -97,7 +135,8 @@ export default GameScreen;
 const styles = StyleSheet.create({
   generalView: {
     flex: 1,
-    padding: 28,
+    padding: 24,
+    alignItems: "center",
   },
   buttonsContainer: {
     flexDirection: "row",
@@ -105,8 +144,16 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
   },
+  buttonsContainerWide: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   insText: {
     marginBottom: 12,
+  },
+  list: {
+    padding: 10,
+    alignItems: "center",
   },
   log: {
     borderColor: "#240217",
@@ -117,7 +164,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.yellow,
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
+    width: 300,
     elevation: 4,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 0 },
@@ -128,10 +175,5 @@ const styles = StyleSheet.create({
     fontFamily: "open-sans",
     fontSize: 16,
     color: Colors.primary500,
-  },
-  list: {
-    padding: 10,
-    marginVertical: 10,
-    borderTopWidth: 2,
   },
 });

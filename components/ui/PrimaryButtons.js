@@ -2,9 +2,9 @@ import { View, Text, Pressable, StyleSheet } from "react-native";
 
 import Colors from "../../constants/Colors";
 
-function PrimaryButton({ children, onPress }) {
+function PrimaryButton({ children, onPress, style }) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Pressable
         style={({ pressed }) => (pressed ? [styles.pres, styles.pressed] : styles.pres)}
         onPress={onPress}
@@ -32,6 +32,8 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     textAlign: "center",
+    fontFamily: "open-sans",
+    fontSize: 15,
   },
   pres: {
     backgroundColor: Colors.primary500,
