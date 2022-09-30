@@ -79,8 +79,6 @@ export default function App() {
   );
 }
 
-console.log("render App " + "|" + Platform.OS + "|");
-
 const styles = StyleSheet.create({
   rootScreen: {
     flex: 1,

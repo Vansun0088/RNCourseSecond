@@ -77,8 +77,6 @@ function StartGameScreen({ onPickNumber }) {
   );
 }
 
-console.log("render StartGameScreen " + "|" + Platform.OS + "|");
-
 export default StartGameScreen;
 
 const styles = StyleSheet.create({

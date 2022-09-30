@@ -3,7 +3,6 @@ import { View, StyleSheet, Image, Text, useWindowDimensions, ScrollView } from "
 import Colors from "../constants/Colors";
 import Title from "../components/ui/Title";
 import PrimaryButton from "../components/ui/PrimaryButtons";
-import Sizes from "../constants/Sizes";
 
 function GameOverScreen({ onRestart, roundsNumber, userNumber }) {
   const { width, height } = useWindowDimensions();
